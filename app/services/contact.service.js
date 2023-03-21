@@ -1,8 +1,8 @@
-const { ObjectId } = require("mongodb");
+const { ObjectId } = require("mongodb"); //nếu muốn thao tác với _id trong mongo thì phải dùng tới đối tượng đặc biệt này
 
 class ContactService {
     constructor(client) {
-        this.Contact = client.db().collection("contacts");
+        this.Contact = client.db().collection("contacts"); //kết nối đến collection contacts, Contact là 1 property của lớp ContactService
     }
     //Định nghĩa các phương thức truy xuất CSDL sử dụng mongodb API
     extractcontactData(payload) {
@@ -13,13 +13,14 @@ class ContactService {
             phone: payload.phone,
             favorite: payload.favorite,
         };
-        //Remove undefined fields
+        //Remove undefined fields - 2 dòng code bên dưới giúp xóa các trường được định nghĩa dư khi truyền dữ liệu vào body để tạo contact
+        //Object cung cấp các chức năng chung cho tất cả các đối tượng JavaScript
         Object.keys(contact).forEach((key) => contact[key] === undefined && delete contact[key]);
         return contact;
     }
 
     async create(payload) {
-        const contact = this.extractcontactData(payload);
+        const contact = this.extractcontactData(payload);//trích xuất dữ liệu contact để lưu vào CSDL
         const result = await this.Contact.findOneAndUpdate(
             contact,
             { $set: { favorite: contact.favorite === true } },
@@ -62,7 +63,7 @@ class ContactService {
         const result = await this.Contact.findOneAndDelete({
             _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
         });
-        return result.value;
+        return result.value; //hàm này có thể trả về document trước khi delete vì không có { returnDocument: "after"} nên mặc định là Return the original
     }
 
     async findFavorite(){

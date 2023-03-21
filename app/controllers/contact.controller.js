@@ -11,7 +11,7 @@ exports.findAll = async (req, res, next) => {
 
     try {
         const contactService = new ContactService(MongoDB.client);
-        const { name } = req.query;
+        const { name } = req.query; //Query parameters
         if (name) {
             documents = await contactService.findByName(name);
         } else {
@@ -27,7 +27,7 @@ exports.findAll = async (req, res, next) => {
 exports.findOne = async (req, res, next) => {
     try {
         const contactService = new ContactService(MongoDB.client);
-        const document = await contactService.findById(req.params.id);
+        const document = await contactService.findById(req.params.id);// lấy Route parameters id
         if (!document) {
             return next(new ApiError(404, "Contact not found"));
         }
@@ -38,7 +38,7 @@ exports.findOne = async (req, res, next) => {
 };
 
 exports.update = async (req, res, next) => {
-    if (Object.keys(req.body).length == 0) {
+    if (Object.keys(req.body).length == 0) { //Object cung cấp các chức năng chung cho tất cả các đối tượng JavaScript
         return next(new ApiError(400, "Data to update can not be empty"));
     }
 
@@ -89,13 +89,14 @@ exports.findAllFavorite = async (_req, res, next) => {
     }
 }
 
+//Create and save a new contact
 exports.create = async (req, res, next) => {
-    if (!req.body?.name) {
-        return next(new ApiError(400, "Name can not be empty"));
+    if (!req.body?.name) {//hoặc dùng lệnh: (!req.body?.name)
+        return next(new ApiError(400, "Name can not be empty"));//đã đúng
     }
 
     try {
-        const contactService = new ContactService(MongoDB.client);
+        const contactService = new ContactService(MongoDB.client);//MongoDb.client truy xuất đến thuộc tính client của class MongoDB trong file mongodb.util.js, câu lệnh này tạo 1 đối tượng ContactService để kết nối tới collection contacts
         const document = await contactService.create(req.body);
         return res.send(document);
     } catch (err) {

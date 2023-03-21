@@ -12,7 +12,7 @@ app.get("/", function(req,res){
     res.json({message: "Welcome to contact book application."});
 });
 
-app.use("/api/contacts", contactsRouter);
+app.use("/api/contacts", contactsRouter);//bất kỳ yêu cầu nào có điểm cuối là api/contacts sẽ chuyển hướng đến contactsRouter
 
 //handle 404 res
 app.use((req, res, next) => {
